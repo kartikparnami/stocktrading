@@ -1,0 +1,2 @@
+class NotEnoughDataForTrend(Exception):
+    pass

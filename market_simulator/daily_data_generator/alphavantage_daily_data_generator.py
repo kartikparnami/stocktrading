@@ -16,6 +16,9 @@ class AlphavantageDailyDataGenerator(object):
     DAILY_DATA_STRING = 'Time Series (Daily)'
 
     def generate(self, symbol, index, input_date, read_from_api):
+        self.symbol = symbol
+        self.index = index
+        self.input_date = input_date
         if read_from_api:
             data = self._get_data_from_api(symbol, index)
         else:
@@ -54,7 +57,17 @@ class AlphavantageDailyDataGenerator(object):
             data_point = {}
             for key in data_object.keys():
                 if key in self.key_to_highlight_map.keys():
-                    data_point[self.key_to_highlight_map[key]] = data_object[key]
+                    if float(data_object[key]) <= 0 and key != '5. volume':
+                        print (
+                            'WARN: Data point %s not found for symbol %s at index %s for date %s' % (
+                                key,
+                                self.symbol.symbol_code,
+                                self.index.index_code,
+                                str(self.input_date)
+                            )
+                        )
+                    else:
+                        data_point[self.key_to_highlight_map[key]] = data_object[key]
         return data_point
 
     def store_back_data_in_file(self, symbol, index):
