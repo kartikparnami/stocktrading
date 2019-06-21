@@ -12,4 +12,4 @@ DATABASES = {
     }
 }
 
-QUANDL_API_KEY = '4ykh9nUXz32qYHhmX-zb'
+QUANDL_API_KEY = '***'

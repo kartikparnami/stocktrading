@@ -289,6 +289,24 @@ class DailySymbolData(models.Model):
                                                        date=curr_date)
         return None
 
+    def get_dsd_x_days_forward(self, x):
+        if x == 0:
+            return self
+        curr_date = self.date
+        last_check_date = curr_date + datetime.timedelta(days=x * 7)
+        days_forward = 1
+        while days_forward <= x and curr_date < last_check_date:
+            curr_date = curr_date + datetime.timedelta(days=1)
+            if DailySymbolData.objects.filter(symbol=self.symbol,
+                                              data_souce=self.data_souce,
+                                              date=curr_date).exists():
+                days_forward += 1
+                if days_forward == x + 1:
+                    return DailySymbolData.objects.get(symbol=self.symbol,
+                                                       data_souce=self.data_souce,
+                                                       date=curr_date)
+        return None
+
     def is_gap_up_opening(self):
         last_obj = self.get_dsd_x_days_back(1)
         if self.start_price > last_obj.close_price:
